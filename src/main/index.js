@@ -59,6 +59,7 @@ function openConfigWindow() {
     height: 600,
     show: false,
     autoHideMenuBar: true,
+    icon: path.join(__dirname, '..', '..', 'assets', 'app-icon.ico'),
     webPreferences: {
       preload: path.join(__dirname, '..', 'preload', 'index.js'),
       contextIsolation: true,
@@ -122,12 +123,21 @@ function handleProcessChange(payload) {
     ? String(rule.layout).toUpperCase()
     : String(config.getDefaultLayout()).toUpperCase();
 
+  console.log(
+    `[main] process change: "${processName}" -> target=${targetLayout} ` +
+    `(rule=${rule ? 'custom' : 'default'}, processChanged=${processChanged})`
+  );
+
   // Respect du choix manuel : si on a deja applique un layout sur ce
   // process et que l'utilisateur l'a change entre-temps, on skippe.
   if (lastAutoAppliedLayout !== null) {
     const current = switcher.getCurrentLayout();
     if (current && current.toUpperCase() !== lastAutoAppliedLayout) {
       // L'utilisateur a manuellement switche : on respecte son choix.
+      console.log(
+        `[main] skipping switch: user manually changed layout ` +
+        `(electronKlid=${current}, lastAuto=${lastAutoAppliedLayout})`
+      );
       return;
     }
   }
@@ -135,12 +145,12 @@ function handleProcessChange(payload) {
   const result = switcher.switchLayout(targetLayout);
   if (result && result.ok) {
     lastAutoAppliedLayout = targetLayout;
-    if (!app.isPackaged) {
-      if (result.skipped) {
-        console.log(`[main] switch skipped (already ${targetLayout}) for ${processName}`);
-      } else {
-        console.log(`[main] switched to ${targetLayout} for ${processName}`);
-      }
+    if (result.skipped) {
+      console.log(`[main] switch skipped (already ${targetLayout}) for ${processName}`);
+    } else if (result.viaBroadcast) {
+      console.log(`[main] switched to ${targetLayout} for ${processName} (via broadcast)`);
+    } else {
+      console.log(`[main] switched to ${targetLayout} for ${processName}`);
     }
   } else {
     console.warn(
@@ -221,6 +231,10 @@ app.whenReady().then(() => {
       console.log('[main] switcher.unavailableReason:', switcher.unavailableReason);
     }
     console.log('[main] current layout:', switcher.getCurrentLayout && switcher.getCurrentLayout());
+    // Confort dev : l'app est headless par defaut (tray only). En dev on
+    // ouvre la fenetre config directement pour voir l'UI sans devoir
+    // trouver l'icone tray placeholder.
+    openConfigWindow();
   }
 });
 

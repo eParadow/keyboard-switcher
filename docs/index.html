@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Keyboard Switcher — Bascule automatique de disposition clavier</title>
+  <meta name="description" content="Application Windows : change la disposition du clavier (AZERTY / QWERTY, etc.) selon l’application au premier plan." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0c0f14;
+      --bg-elevated: #131822;
+      --border: #1e2636;
+      --text: #e8ecf4;
+      --muted: #8b96ab;
+      --accent: #4f8cff;
+      --accent-dim: #3a6fd6;
+      --success: #3dd68c;
+      --radius: 14px;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "DM Sans", system-ui, sans-serif;
+      background: radial-gradient(1200px 600px at 20% -10%, rgba(79, 140, 255, 0.18), transparent 55%),
+        radial-gradient(900px 500px at 100% 0%, rgba(61, 214, 140, 0.08), transparent 50%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+    .badge {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.65rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+    h1 {
+      font-size: clamp(1.75rem, 4vw, 2.35rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.5rem;
+      flex: 1 1 100%;
+    }
+    .lead {
+      font-size: 1.125rem;
+      color: var(--muted);
+      max-width: 52ch;
+      margin: 0;
+    }
+    .card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+    }
+    .card h2 {
+      margin: 0 0 0.75rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin-top: 1.25rem;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 0.85rem 1.35rem;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary {
+      background: linear-gradient(180deg, var(--accent), var(--accent-dim));
+      color: #fff;
+    }
+    .btn-primary:hover { filter: brightness(1.06); text-decoration: none; }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.05); text-decoration: none; }
+    .meta {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 1rem;
+    }
+    ul.features {
+      margin: 0;
+      padding-left: 1.15rem;
+      color: var(--muted);
+    }
+    ul.features li { margin: 0.35rem 0; }
+    ul.features strong { color: var(--text); }
+    footer {
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    code {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.88em;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 0.15em 0.4em;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <span class="badge">Windows · Electron</span>
+      <h1>Keyboard Switcher</h1>
+      <p class="lead">
+        Passe automatiquement d’une disposition clavier à l’autre selon l’application au premier plan
+        (par ex. AZERTY au bureau, QWERTY pour certains jeux).
+      </p>
+    </header>
+
+    <section class="card" aria-labelledby="download-title">
+      <h2 id="download-title">Télécharger</h2>
+      <p style="margin: 0; color: var(--muted);">
+        Installeur NSIS 64 bits. Après installation : icône dans la zone de notification, raccourcis bureau et menu Démarrer.
+      </p>
+      <div class="actions">
+        <a class="btn btn-primary" id="dl-exe" href="https://github.com/eParadow/keyboard-switcher/releases/latest/download/Keyboard-Switcher-Setup-x64.exe">
+          Télécharger l’installeur (.exe)
+        </a>
+        <a class="btn btn-secondary" href="https://github.com/eParadow/keyboard-switcher/releases/latest">
+          Toutes les versions
+        </a>
+      </div>
+      <p class="meta" id="release-note">
+        Si le lien direct ne fonctionne pas encore, ouvrez la page des releases et téléchargez le fichier <code>Keyboard-Switcher-Setup-x64.exe</code>.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Fonctionnalités</h2>
+      <ul class="features">
+        <li><strong>Règles par processus</strong> — associez un exécutable à une disposition (HKL).</li>
+        <li><strong>Interface de configuration</strong> — liste des processus actifs, pause du basculement auto.</li>
+        <li><strong>Démarrage avec Windows</strong> — option d’auto-lancement.</li>
+        <li><strong>Respect du choix manuel</strong> — si vous changez de layout à la main, l’app s’aligne sur votre préférence pour ce processus.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Code source &amp; documentation</h2>
+      <p style="margin: 0; color: var(--muted);">
+        <a href="https://github.com/eParadow/keyboard-switcher">Dépôt GitHub</a>
+        ·
+        <a href="https://github.com/eParadow/keyboard-switcher/blob/master/README.md">README</a>
+        ·
+        Référence des layouts : <a href="https://github.com/eParadow/keyboard-switcher/blob/master/docs/layouts.md">docs/layouts.md</a>
+      </p>
+    </section>
+
+    <footer>
+      <p style="margin: 0;">
+        Licence MIT ·
+        <a href="https://github.com/eParadow/keyboard-switcher/issues">Signaler un problème</a>
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

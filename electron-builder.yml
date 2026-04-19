@@ -29,16 +29,23 @@ asarUnpack:
   - "**/koffi/**"
   - "**/active-win/**"
 
+# On desactive le rebuild natif automatique : ni koffi ni active-win n'en
+# ont besoin sur Windows (koffi ships ses binaires prebuilt par version
+# de Node/Electron ; active-win v8 ship un `main.exe` precompile). Sans
+# cette option, electron-builder invoque node-gyp sur le binding.gyp
+# (macOS) d'active-win et echoue si Visual Studio Build Tools n'est pas
+# installe.
+npmRebuild: false
+buildDependenciesFromSource: false
+
 win:
   target:
     - target: nsis
       arch:
         - x64
-  # TODO : fournir un vrai app-icon.ico (cf. assets/app-icon.ico.TODO).
-  # Tant que le fichier n'existe pas, on laisse cette ligne commentee pour
-  # ne pas faire echouer electron-builder. L'installer utilisera l'icone
-  # Electron par defaut.
-  # icon: assets/app-icon.ico
+  icon: assets/app-icon.ico
+  # Nom stable pour le lien permanent GitHub Releases (latest/download/...).
+  artifactName: Keyboard-Switcher-Setup-${arch}.${ext}
 
 nsis:
   oneClick: false

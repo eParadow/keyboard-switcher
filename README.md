@@ -2,6 +2,12 @@
 
 Application Windows qui change automatiquement la disposition du clavier en fonction de l'application active. Utile pour basculer automatiquement entre AZERTY et QWERTY selon le logiciel utilisé (typiquement pour les jeux qui imposent un QWERTY).
 
+## Site et téléchargements
+
+- **Page d’accueil (GitHub Pages)** : [eparadow.github.io/keyboard-switcher](https://eparadow.github.io/keyboard-switcher/) — présentation, lien direct vers l’installeur Windows et historique des versions.
+- **Première publication** : dans les réglages du dépôt GitHub, activez **Pages** avec la source **GitHub Actions** (le workflow `.github/workflows/pages.yml` déploie le dossier `docs/`).
+- **Publier un installeur** : créez un tag de version (`git tag v0.1.0 && git push origin v0.1.0`) ; le workflow **Release Windows installer** construit l’EXE et l’attache à la release GitHub.
+
 Construite avec Electron, `active-win` pour détecter la fenêtre au premier plan et `koffi` pour appeler les API Win32 de changement de layout (`LoadKeyboardLayoutW` + `PostMessageW(WM_INPUTLANGCHANGEREQUEST)`).
 
 ## Fonctionnalités
@@ -106,11 +112,11 @@ KeyboardAdapter/
 │       └── hooks/
 │           └── useKeyboardApi.js # Encapsule window.api
 ├── assets/
-│   ├── tray-icon.png             # 16x16 bleu (placeholder)
-│   ├── tray-icon-paused.png      # 16x16 gris (placeholder)
-│   └── app-icon.ico.TODO         # a generer (cf. fichier)
+│   ├── tray-icon.png             # 32x32 clavier bleu (actif)
+│   ├── tray-icon-paused.png      # 32x32 clavier gris (pause)
+│   └── app-icon.ico              # multi-taille 16/32/48/64/128/256
 ├── scripts/
-│   └── gen-placeholder-icons.js  # regenere les PNG tray
+│   └── gen-placeholder-icons.js  # regenere les icones (PNG + ICO)
 ├── poc/                          # scripts standalone de validation
 ├── docs/
 │   └── layouts.md                # Reference des codes de layouts Windows
@@ -136,13 +142,17 @@ node src/main/config.js
 
 ## Icônes
 
-Les PNG `assets/tray-icon.png` et `assets/tray-icon-paused.png` fournis sont de simples carrés unis (bleu #4a9eff et gris #666) de 16×16. Ils sont minimaux mais fonctionnels. Pour les régénérer :
+Les icônes sont générées proceduralement en pixel art (clavier stylisé) sans dépendance externe :
+
+- `assets/tray-icon.png` — 32×32, clavier bleu (état actif)
+- `assets/tray-icon-paused.png` — 32×32, clavier gris (état pause)
+- `assets/app-icon.ico` — multi-taille (16/32/48/64/128/256), utilisé par la fenêtre, la barre des tâches et l'installeur
+
+Pour les régénérer après modification du script `scripts/gen-placeholder-icons.js` :
 
 ```bash
 npm run gen-icons
 ```
-
-L'icône de l'exécutable installé (`app-icon.ico`) n'est pas fournie — voir `assets/app-icon.ico.TODO` pour les instructions de génération. Tant que ce fichier n'existe pas, l'installeur utilise l'icône Electron par défaut (la ligne `icon:` est commentée dans `electron-builder.yml`).
 
 ## Limitations connues
 
