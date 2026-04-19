@@ -1,0 +1,22 @@
+Remplacer ce fichier par un vrai `app-icon.ico` avant le premier release.
+
+Contraintes attendues par electron-builder (target NSIS / Windows) :
+- format .ico multi-resolution (au minimum 256x256, idealement avec aussi
+  128x128, 64x64, 48x48, 32x32, 16x16)
+- profondeur 32 bits (RGBA)
+- nom exact : app-icon.ico dans ce dossier (assets/)
+
+Comment le generer sans dependance lourde :
+- partir d'un PNG 256x256 (logo de l'app), par ex. via un editeur graphique
+  quelconque ou un SVG exporte
+- le convertir en .ico avec un outil local ou un site comme :
+    https://convertico.com
+    https://redketchup.io/icon-converter
+    https://www.icoconverter.com
+- ou en ligne de commande avec ImageMagick :
+    magick convert logo.png -define icon:auto-resize=256,128,64,48,32,16 app-icon.ico
+
+Tant que ce fichier `.ico` n'existe pas, la ligne `icon:` du bloc `win:` dans
+`electron-builder.yml` est commentee et electron-builder utilisera l'icone
+par defaut d'Electron pour le .exe installe. Le build fonctionnera, mais
+l'executable affichera le logo Electron standard.

@@ -6,14 +6,25 @@ directories:
   output: dist/installer
   buildResources: assets
 
+# On inclut le code main + preload, les assets, le package.json et le
+# bundle renderer produit par Vite. Le source renderer (src/renderer/**)
+# est exclu car il est deja transpile dans dist/renderer/. Les PoCs et
+# la doc technique ne sont pas packages.
 files:
-  - src/**
+  - src/main/**
+  - src/preload/**
   - assets/**
   - package.json
-  - node_modules/**
   - dist/renderer/**
+  - "!src/renderer/**"
+  - "!poc/**"
+  - "!docs/**"
+  - "!scripts/**"
+  - "!**/*.map"
 
 asar: true
+# koffi et active-win embarquent des binaires natifs qui doivent rester
+# extractibles du .asar au runtime, sinon Node ne peut pas les require().
 asarUnpack:
   - "**/koffi/**"
   - "**/active-win/**"
@@ -23,7 +34,11 @@ win:
     - target: nsis
       arch:
         - x64
-  icon: assets/app-icon.ico
+  # TODO : fournir un vrai app-icon.ico (cf. assets/app-icon.ico.TODO).
+  # Tant que le fichier n'existe pas, on laisse cette ligne commentee pour
+  # ne pas faire echouer electron-builder. L'installer utilisera l'icone
+  # Electron par defaut.
+  # icon: assets/app-icon.ico
 
 nsis:
   oneClick: false
@@ -32,3 +47,6 @@ nsis:
   createDesktopShortcut: true
   createStartMenuShortcut: true
   shortcutName: Keyboard Switcher
+
+# Pas d'auto-update pour l'instant : on n'a pas de serveur de release.
+publish: null
