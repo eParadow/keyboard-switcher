@@ -1,0 +1,32 @@
+{
+  "name": "keyboard-switcher",
+  "version": "0.1.0",
+  "description": "Application Windows qui change automatiquement la disposition du clavier en fonction de l'application active.",
+  "main": "src/main/index.js",
+  "type": "commonjs",
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dev": "cross-env NODE_ENV=development electron .",
+    "build:renderer": "vite build",
+    "build": "npm run build:renderer && electron-builder",
+    "dist": "electron-builder --win"
+  },
+  "dependencies": {
+    "active-win": "^8.2.0",
+    "auto-launch": "^5.0.6",
+    "electron-store": "^8.2.0",
+    "koffi": "^2.9.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "electron": "^32.0.0",
+    "electron-builder": "^25.0.5",
+    "vite": "^5.4.0"
+  }
+}

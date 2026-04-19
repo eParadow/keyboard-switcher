@@ -1,0 +1,34 @@
+appId: com.keyboardswitcher.app
+productName: Keyboard Switcher
+copyright: Copyright (c) 2026
+
+directories:
+  output: dist/installer
+  buildResources: assets
+
+files:
+  - src/**
+  - assets/**
+  - package.json
+  - node_modules/**
+  - dist/renderer/**
+
+asar: true
+asarUnpack:
+  - "**/koffi/**"
+  - "**/active-win/**"
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: assets/app-icon.ico
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  perMachine: false
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Keyboard Switcher
